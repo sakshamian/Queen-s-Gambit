@@ -1,0 +1,21 @@
+{
+  "name": "falcon-chess",
+  "version": "1.0.0",
+  "description": "Play Chess online or with Stockfish for FREE",
+  "main": "server.js",
+  "scripts": {
+    "start": "node app/server.js",
+    "lint": "npx prettier --write .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "BSD-3-Clause license",
+  "dependencies": {
+    "@chrisoakman/chessboardjs": "^1.0.0",
+    "chess.js": "^0.12.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.17.1",
+    "path": "0.12.7",
+    "prettier": "^3.0.0",
+    "socket.io": "^4.2.1"
+  }
+}
