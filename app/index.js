@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const { Chess } = require("chess.js");
 const { Server } = require("socket.io");
 const io = new Server(server);
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 const path = require("path");
 
 const dir = {
@@ -253,6 +253,6 @@ io.on("connection", (socket) => {
 });
 
 // start server
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`Live server started on port:${server.address().port}`);
 });
