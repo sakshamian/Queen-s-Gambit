@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const { Chess } = require("chess.js");
 const { Server } = require("socket.io");
 const io = new Server(server);
-const port = process.env.port ? process.env.port : 8080;
+const PORT = 8080;
 const path = require("path");
 
 const dir = {
@@ -67,25 +67,17 @@ app.get("*", (req, res) => {
   res.send("404");
 });
 
-// handle user connection to server through socket
 io.on("connection", (socket) => {
-  // console.log("user connected");
   socket.emit("room_list", rooms);
 
-  // preparing variables to store roomName and userName
   let roomNameSocket = "";
   let userNameSocket = "";
-
-  // handling create_room event
   socket.on("create_room", (type, name, algorithmName, depth, time) => {
-    // check if rooms contains a room with name name
     if (rooms.find((room) => room.name === name)) {
-      // if room already exists, don't create a new room
-      console.log("room already exists:", name);
+      console.log("Room already exists:", name);
       return;
     }
-    console.log("creating room:", name);
-    // create a new room and add it to rooms array
+    console.log("Creating room:", name);
     rooms.push({
       name,
       white: {},
@@ -124,19 +116,14 @@ io.on("connection", (socket) => {
       roomNameSocket = room.name;
       userNameSocket = userName;
     }
-    // sending room_status event to all members of this room
     io.to(room.name).emit("room_status", room);
-
-    // update everyone's room list
     io.emit("room_list", rooms);
   });
 
   socket.on("move", (san) => {
-    // find correct room
     const room = rooms.find((r) => r.name === roomNameSocket);
 
     if (room) {
-      // update game status
       const game = new Chess(room.fen);
       const move = game.move(san);
       room.fen = game.fen();
@@ -181,7 +168,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // same as restart_request but for switching sides
   socket.on("switch_request", () => {
     console.log("switch request");
     const room = rooms.find((r) => r.name === roomNameSocket);
@@ -224,51 +210,42 @@ io.on("connection", (socket) => {
     }
   });
 
-  // handling user disconnection
   socket.on("disconnect", () => {
     console.log("user disconnected");
     if (roomNameSocket) {
-      // find correct room
       const room = rooms.find((r) => r.name === roomNameSocket);
       if (room.white.id === socket.id) {
-        // if user is white, remove from white spot
         console.log(
           userNameSocket,
-          "removed as white player from room",
+          "Quite as white player from the room",
           roomNameSocket
         );
         room.white = {};
       } else if (room.black.id === socket.id) {
-        // if user is black, remove from black spot
         console.log(
           userNameSocket,
-          "removed as black player from room",
+          "Quit as black player from the room",
           roomNameSocket
         );
         room.black = {};
       } else {
-        // if user is spectator, remove from spectators list
         console.log(
           userNameSocket,
-          "removed as spectator player from room",
+          "Quit as spectator player from the room",
           roomNameSocket
         );
         room.spectators = room.spectators.filter(
           (spectator) => spectator.id !== socket.id
         );
       }
-      // send updated room information to all members of this room
       io.to(room.name).emit("room_status", room);
-
-      // if room is empty, remove it from rooms list
       if (
         Object.keys(room.white).length === 0 &&
         Object.keys(room.black).length === 0 &&
         room.spectators.length === 0
       ) {
-        console.log("room removed:", roomNameSocket);
+        console.log("Room removed:", roomNameSocket);
         rooms.splice(rooms.indexOf(room), 1);
-        // update everyone's room list
         io.emit("room_list", rooms);
       }
     }
@@ -276,11 +253,6 @@ io.on("connection", (socket) => {
 });
 
 // start server
-server.listen(port, () => {
-  console.log(`listening on port:${server.address().port}`);
-});
-
-process.on("SIGINT", () => {
-  console.log("SERVER CLOSED from port: ", port);
-  process.exit(0);
+server.listen(PORT, () => {
+  console.log(`Live server started on port:${server.address().port}`);
 });

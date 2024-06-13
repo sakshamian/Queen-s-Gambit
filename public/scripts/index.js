@@ -1,16 +1,9 @@
 "use strict";
 
-/* global io */
-/* eslint-disable no-unused-vars */
-
-// getting elements from html
 const roomNameInput = document.getElementById("roomName");
-// const createRoomButton = document.getElementById('createRoomButton');
 
-// opening socket
 const socket = io();
 
-// if the user doesn't have a name and a room name, can't create a room
 function createRoom(type) {
   console.log(type);
   if (
@@ -23,8 +16,7 @@ function createRoom(type) {
           document.getElementById("Depth").checkValidity() &&
           document.getElementById("Time").checkValidity()
         ) {
-          console.log("creating room: ", roomNameInput.value);
-          // notify the server about new room
+          console.log("Creating room: ", roomNameInput.value);
           const depth = Number(document.getElementById("Depth").value);
           const time = Number(document.getElementById("Time").value);
           socket.emit("create_room", type, roomNameInput.value, depth, time);
@@ -55,18 +47,11 @@ function joinRoom(roomName) {
   }
 }
 
-// handle room_list event by creating a table with joinable rooms
 socket.on("room_list", (roomListServer) => {
-  // removing old rows
   document.getElementById("rows").textContent = "";
 
-  // for each room add a row to the table
   for (let i = 0; i < roomListServer.length; i += 1) {
-    // get the room
     const room = roomListServer[i];
-
-    // create a new row with room name, white player name,
-    // black player name, spectators number and join button
     const roomRow = document.createElement("tr");
     const roomName = document.createElement("td");
     roomName.innerText = room.name;
@@ -77,7 +62,6 @@ socket.on("room_list", (roomListServer) => {
     const roomSpecators = document.createElement("td");
     roomSpecators.innerText = room.spectators.length;
     
-    // creating join room button
     const roomButton = document.createElement("td");
     const roomJoinButton = document.createElement("button");
     roomJoinButton.textContent = "Spectate";
@@ -85,18 +69,14 @@ socket.on("room_list", (roomListServer) => {
       joinRoom(room.name);
     });
 
-    // adding button to its cell
     roomButton.appendChild(roomJoinButton);
 
-    // adding elements to row
     roomRow.appendChild(roomName);
     roomRow.appendChild(roomWhite);
     roomRow.appendChild(roomBlack);
     roomRow.appendChild(roomSpecators);
     roomRow.appendChild(roomButton);
 
-    // adding row to table
     document.getElementById("rows").appendChild(roomRow);
-    // roomList.appendChild(roomItem);
   }
 });
