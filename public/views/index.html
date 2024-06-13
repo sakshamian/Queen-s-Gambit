@@ -52,12 +52,12 @@
             id="singleplayerTabButton"
             onclick="document.location = '/play/bot'"
           >
-            <h3>Play a Bot</h3>
+            <h3>Play Stockfish</h3>
           </button>
           <button 
             class="tablinks half centered" 
             id="singleplayerTabButton" 
-            onclick="document.location = '/play/chess'">
+            onclick="redirectToBot()">
             <h3>Play our Bot</h3>
           </button>
         </div>
@@ -91,5 +91,8 @@
   <script>
     console.log("opening multiplayer tab");
     document.getElementById("multiplayerTabButton").click();
+    function redirectToBot(){
+      window.location.href = "https://queens-gambit-engine.vercel.app/";
+    }
   </script>
 </html>

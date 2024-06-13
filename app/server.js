@@ -20,7 +20,6 @@ const views = {
   bot: path.join(__dirname, "../", "public/views/bot.html"),
   online: path.join(__dirname, "../", "public/views/online.html"),
   landing: path.join(__dirname, "../", "public/views/index.html"),
-  queensGambitBot: path.join(__dirname, "../", "public/views/our-bot.html"),
 };
 
 // making public folder available, contains html, scripts, css, images
@@ -58,10 +57,6 @@ app.get("/play/online", (req, res) => {
 
 app.get("/play/bot", (req, res) => {
   res.sendFile(views.bot);
-});
-
-app.get("/play/chess", (req, res) => {
-  res.sendFile(views.queensGambitBot);
 });
 
 app.get("/play", (req, res) => {
