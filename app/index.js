@@ -22,7 +22,6 @@ const views = {
   landing: path.join(__dirname, "../", "public/views/index.html"),
 };
 
-// making public folder available, contains html, scripts, css, images
 app.use(express.static(dir.public));
 
 const files = {
